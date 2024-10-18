@@ -1,0 +1,51 @@
+1. Does not work for smaller batch sizes
+2. Trained paths maybe faulty?
+3. Maybe not the best to use for ood - crosentropy - focal/huber loss. (basically look into other losses)
+4. Look into focal loss -- maybe some challenge here. 
+5. Ablation without the top branch (grl layer). 
+6. Look into vit (possibly convnext)
+7. inference time and train time comparisons ---> Get clarity.
+8. more baselines -- near ood. 
+9. Look into metrics as well. 
+10. Can you try to make the method fail. 
+11. Where exactly are the branches focusing? ---> Get Clarity
+12. plot the tsne and umap together. See when the clustering occurs what happens to the saliency.
+13. (GRL Is trying to push away the features). 
+14. For upper brnach -- compare the similarity based ont eh cames -- for both images point out the salinecy in the upper branch and what the commonality it has with the other branch and the other images as well. (Looking for structural similarity between the two images.)
+15. Similarity function -- can we do something else other than cosine similarity? (just need a pribablity value) -- Between 0 and 1 (normalised value)
+16. print a few more print statesmts
+17. The similiary is with the background. --> Maybe super intuitine interms of ismialry and not just fg and bg.
+
+
+The error I was talking about: 
+
+python train.py
+Using device: cuda
+
+Train dataset size: 400
+Validation dataset size: 50
+Evaluating combination: lambda_sim_1_lambda_cls_1_lambda_recon_1
+Epoch [1/10], Sim Loss: 0.6498, Class Loss: 2.6829, Recon Loss: 38.6636, Train Accuracy1: 19.75%, Train Accuracy2: 20.25%, Val Sim Loss: 1.4264, Val Class Loss: 1.6057, Val Recon Loss: 38.6193, Val Accuracy1: 18.00%, Val Accuracy2: 22.00%
+Epoch [2/10], Sim Loss: 0.6476, Class Loss: 1.6111, Recon Loss: 38.0103, Train Accuracy1: 19.75%, Train Accuracy2: 22.50%, Val Sim Loss: 1.6693, Val Class Loss: 1.6076, Val Recon Loss: 38.2934, Val Accuracy1: 18.00%, Val Accuracy2: 18.00%
+Epoch [3/10], Sim Loss: 0.5856, Class Loss: 1.6100, Recon Loss: 37.5453, Train Accuracy1: 18.50%, Train Accuracy2: 17.25%, Val Sim Loss: 0.4670, Val Class Loss: 1.6139, Val Recon Loss: 39.0277, Val Accuracy1: 20.00%, Val Accuracy2: 24.00%
+Epoch [4/10], Sim Loss: 0.5854, Class Loss: 1.6098, Recon Loss: 37.0235, Train Accuracy1: 17.25%, Train Accuracy2: 22.00%, Val Sim Loss: 0.4382, Val Class Loss: 1.5988, Val Recon Loss: 37.8824, Val Accuracy1: 20.00%, Val Accuracy2: 24.00%
+Epoch [5/10], Sim Loss: 0.5694, Class Loss: 1.6088, Recon Loss: 36.5519, Train Accuracy1: 20.25%, Train Accuracy2: 22.00%, Val Sim Loss: 0.4742, Val Class Loss: 1.6169, Val Recon Loss: 37.4706, Val Accuracy1: 16.00%, Val Accuracy2: 16.00%
+Epoch [6/10], Sim Loss: 0.5745, Class Loss: 1.6093, Recon Loss: 36.0690, Train Accuracy1: 17.50%, Train Accuracy2: 22.25%, Val Sim Loss: 0.4533, Val Class Loss: 1.6410, Val Recon Loss: 37.3211, Val Accuracy1: 20.00%, Val Accuracy2: 24.00%
+Epoch [7/10], Sim Loss: 0.5686, Class Loss: 1.6093, Recon Loss: 34.9130, Train Accuracy1: 18.75%, Train Accuracy2: 22.50%, Val Sim Loss: 0.4643, Val Class Loss: 1.6045, Val Recon Loss: 35.3463, Val Accuracy1: 20.00%, Val Accuracy2: 24.00%
+Epoch [8/10], Sim Loss: 0.5546, Class Loss: 1.6097, Recon Loss: 33.2577, Train Accuracy1: 19.25%, Train Accuracy2: 21.75%, Val Sim Loss: 0.5130, Val Class Loss: 1.6038, Val Recon Loss: 34.3174, Val Accuracy1: 20.00%, Val Accuracy2: 24.00%
+Epoch [9/10], Sim Loss: 0.5541, Class Loss: 1.6097, Recon Loss: 32.2011, Train Accuracy1: 19.25%, Train Accuracy2: 23.25%, Val Sim Loss: 0.4909, Val Class Loss: 1.6042, Val Recon Loss: 33.3496, Val Accuracy1: 20.00%, Val Accuracy2: 28.00%
+Rejecting sample due to out-of-range values: tensor([-2.3842e-07], device='cuda:0')
+Traceback (most recent call last):
+  File "/home/localssk23/Downloads/ishika/train.py", line 406, in <module>
+    results[key] = train_model(backbone, upper_branch, classification_branch, reconstruction_branch, train_loader, val_loader, criterion_sim, criterion_cls, criterion_recon, optimizer, lambda_sim, lambda_cls, lambda_recon)
+  File "/home/localssk23/Downloads/ishika/train.py", line 269, in train_model
+    sim_loss = criterion_sim(similarity_score, labels.float())
+  File "/home/localssk23/backup/soumya/env/ppml/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/localssk23/backup/soumya/env/ppml/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/localssk23/backup/soumya/env/ppml/lib/python3.10/site-packages/torch/nn/modules/loss.py", line 621, in forward
+    return F.binary_cross_entropy(input, target, weight=self.weight, reduction=self.reduction)
+  File "/home/localssk23/backup/soumya/env/ppml/lib/python3.10/site-packages/torch/nn/functional.py", line 3162, in binary_cross_entropy
+    if target.size() != input.size():
+AttributeError: 'NoneType' object has no attribute 'size'
